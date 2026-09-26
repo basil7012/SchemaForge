@@ -1,0 +1,9 @@
+# Normalize line endings to LF on check-in (cross-platform safety)
+* text=auto eol=lf
+
+# Explicitly mark binary files
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary
+*.ttf binary
