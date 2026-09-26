@@ -33,6 +33,9 @@ export const metadata: Metadata = {
     title: "SchemaForge — Free SQL Schema Converter & Code Generator",
     description: "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, and realistic mock data. 100% client-side & private.",
   },
+  verification: {
+    google: 'tRB_DAf4Sx9IHG5MeD9LT5cLucGjvoqZ1d0zABuwjL0',
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
