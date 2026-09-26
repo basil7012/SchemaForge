@@ -19,7 +19,7 @@ const SITE_URL = "https://www.schemaforge.online";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "SchemaForge — Free SQL Schema to C# & TypeScript Converter",
+  title: "SchemaForge — SQL to C# & TypeScript Converter",
   description:
     "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, Mock JSON, and SQL Inserts. 100% free, private, and runs entirely in your browser.",
   keywords: [
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "SchemaForge — Free SQL Schema to C# & TypeScript Converter",
+    title: "SchemaForge — SQL to C# & TypeScript Converter",
     description:
       "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, and realistic mock data. 100% client-side & private.",
     type: "website",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SchemaForge — Free SQL Schema to C# & TypeScript Converter",
+    title: "SchemaForge — SQL to C# & TypeScript Converter",
     description:
       "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, and realistic mock data. 100% client-side & private.",
   },
