@@ -16,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://schemaforge.dev'
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://schemaforge.online'
   ),
   title: "SchemaForge — Free SQL Schema Converter & Code Generator",
   description: "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, and realistic mock data. 100% free, private, and runs entirely in your browser.",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     title: "SchemaForge — Free SQL Schema Converter & Code Generator",
     description: "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, and realistic mock data. 100% client-side & private.",
     type: "website",
-    url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://schemaforge.dev',
+    url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://schemaforge.online',
   },
   twitter: {
     card: 'summary_large_image',
