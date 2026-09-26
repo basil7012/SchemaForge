@@ -12,6 +12,8 @@ export async function generateStaticParams() {
   }));
 }
 
+const SITE_URL = 'https://www.schemaforge.online';
+
 export async function generateMetadata({
   params,
 }: {
@@ -22,12 +24,20 @@ export async function generateMetadata({
 
   if (!route) return { title: 'Not Found' };
 
+  const canonicalUrl = `${SITE_URL}/${p.category}/${p.slug}`;
+
   return {
     title: route.title,
     description: route.description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: route.title,
       description: route.description,
+      url: canonicalUrl,
+      type: 'website',
+      siteName: 'SchemaForge',
     },
   };
 }
@@ -81,15 +91,23 @@ CREATE TABLE orders (
     },
     {
       q: 'Is my SQL schema data private?',
-      a: 'Yes — completely. The entire conversion runs inside your browser using JavaScript. Your SQL is never sent to any server, logged, or stored anywhere.',
+      a: 'Yes — completely. The entire conversion runs inside your browser using JavaScript. Your SQL is never sent to any server, logged, or stored anywhere. This makes it safe to use with production or confidential database schemas.',
     },
     {
       q: 'Which SQL dialects are supported?',
-      a: 'PostgreSQL, MySQL, SQLite, and SQL Server DDL syntax are all supported. The parser auto-detects the dialect.',
+      a: 'PostgreSQL, MySQL, SQLite, SQL Server, Oracle, and MariaDB DDL syntax are all supported. The parser auto-detects the dialect from your CREATE TABLE syntax automatically.',
     },
     {
       q: 'Can I convert multiple tables at once?',
-      a: 'Yes! Paste multiple CREATE TABLE statements separated by semicolons and all tables will be converted simultaneously.',
+      a: 'Yes! Paste multiple CREATE TABLE statements separated by semicolons and all tables will be converted simultaneously, including cross-table foreign key relationships.',
+    },
+    {
+      q: `Does this tool support nullable columns and constraints?`,
+      a: `Yes. NULL, NOT NULL, DEFAULT values, PRIMARY KEY, UNIQUE, and FOREIGN KEY constraints are all parsed and reflected in the ${route.targetName} output. Nullable columns are correctly typed as optional properties or nullable types.`,
+    },
+    {
+      q: 'Is SchemaForge free to use?',
+      a: 'Yes, SchemaForge is completely free with no usage limits, no account required, and no rate limits. The tool runs entirely in your browser and will always be free.',
     },
   ];
 

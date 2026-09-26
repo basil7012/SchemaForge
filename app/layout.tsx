@@ -14,27 +14,46 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+// Canonical base — always www to match Vercel's primary domain config
+const SITE_URL = "https://www.schemaforge.online";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? 'https://schemaforge.online'
-  ),
-  title: "SchemaForge — Free SQL Schema Converter & Code Generator",
-  description: "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, and realistic mock data. 100% free, private, and runs entirely in your browser.",
-  keywords: ["SQL converter", "schema to C#", "SQL to TypeScript", "mock data generator", "DDL converter", "free SQL tool"],
+  metadataBase: new URL(SITE_URL),
+  title: "SchemaForge — Free SQL Schema to C# & TypeScript Converter",
+  description:
+    "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, Mock JSON, and SQL Inserts. 100% free, private, and runs entirely in your browser.",
+  keywords: [
+    "SQL converter",
+    "schema to C#",
+    "SQL to TypeScript",
+    "postgres to csharp",
+    "mysql to typescript",
+    "mock data generator",
+    "DDL converter",
+    "free SQL tool",
+    "CREATE TABLE converter",
+    "SQL schema generator",
+  ],
   authors: [{ name: "SchemaForge" }],
+  alternates: {
+    canonical: SITE_URL,
+  },
   openGraph: {
-    title: "SchemaForge — Free SQL Schema Converter & Code Generator",
-    description: "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, and realistic mock data. 100% client-side & private.",
+    title: "SchemaForge — Free SQL Schema to C# & TypeScript Converter",
+    description:
+      "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, and realistic mock data. 100% client-side & private.",
     type: "website",
-    url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://schemaforge.online',
+    url: SITE_URL,
+    siteName: "SchemaForge",
   },
   twitter: {
-    card: 'summary_large_image',
-    title: "SchemaForge — Free SQL Schema Converter & Code Generator",
-    description: "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, and realistic mock data. 100% client-side & private.",
+    card: "summary_large_image",
+    title: "SchemaForge — Free SQL Schema to C# & TypeScript Converter",
+    description:
+      "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, and realistic mock data. 100% client-side & private.",
   },
   verification: {
-    google: 'tRB_DAf4Sx9lHG5MeD9LT5cLucGjvoqZ1d0zABuwjL0',
+    google: "tRB_DAf4Sx9lHG5MeD9LT5cLucGjvoqZ1d0zABuwjL0",
   },
 };
 
