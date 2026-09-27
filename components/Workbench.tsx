@@ -1,11 +1,58 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import Editor from '@monaco-editor/react';
+import dynamic from 'next/dynamic';
+import { useMediaQuery } from '@/lib/hooks/useMediaQuery';
 import {
   Copy, Check, ShieldCheck, Settings2, Code2,
   Database, Download, RefreshCw, AlertTriangle
 } from 'lucide-react';
+
+const Editor = dynamic(() => import('@monaco-editor/react'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-full text-zinc-500 text-sm gap-2">
+      <div className="w-4 h-4 border-2 border-zinc-600 border-t-indigo-500 rounded-full animate-spin" />
+      Loading editor...
+    </div>
+  ),
+});
+
+const EDITOR_OPTIONS_INPUT = {
+  minimap: { enabled: false },
+  fontSize: 13,
+  fontFamily: "'JetBrains Mono', 'Menlo', monospace",
+  fontLigatures: true,
+  padding: { top: 16, bottom: 16 },
+  scrollBeyondLastLine: false,
+  lineHeight: 1.7,
+  renderLineHighlight: 'gutter' as const,
+  cursorBlinking: 'smooth' as const,
+  cursorSmoothCaretAnimation: 'on' as const,
+  formatOnPaste: true,
+  wordWrap: 'on' as const,
+  smoothScrolling: true,
+};
+
+const EDITOR_OPTIONS_OUTPUT = {
+  readOnly: true,
+  minimap: { enabled: false },
+  fontSize: 13,
+  fontFamily: "'JetBrains Mono', 'Menlo', monospace",
+  fontLigatures: true,
+  padding: { top: 16, bottom: 16 },
+  scrollBeyondLastLine: false,
+  lineHeight: 1.7,
+  renderLineHighlight: 'none' as const,
+  matchBrackets: 'never' as const,
+  hideCursorInOverviewRuler: true,
+  wordWrap: 'on' as const,
+  smoothScrolling: true,
+};
+
+const textareaClass =
+  'w-full h-full resize-none bg-transparent text-zinc-100 font-mono text-[13px] leading-7 ' +
+  'outline-none border-none p-4 placeholder-zinc-600 caret-indigo-400';
 import { parseSqlDDL } from '@/lib/parser';
 import { generateCSharpPoco } from '@/lib/generators/csharp';
 import { generateTypeScript } from '@/lib/generators/typescript';
@@ -43,6 +90,7 @@ const TAB_CONFIG = [
 ];
 
 export default function Workbench({ defaultSql = DEFAULT_SQL, defaultTab = 'csharp' }: WorkbenchProps) {
+  const isDesktop = useMediaQuery('(min-width: 768px)');
   const [sqlInput, setSqlInput] = useState(defaultSql);
   const [debouncedSql, setDebouncedSql] = useState(defaultSql);
   const [activeTab, setActiveTab] = useState<'csharp' | 'typescript' | 'json' | 'sql'>(defaultTab);
@@ -147,13 +195,14 @@ export default function Workbench({ defaultSql = DEFAULT_SQL, defaultTab = 'csha
 
   const activeLanguage = TAB_CONFIG.find(t => t.id === activeTab)?.lang ?? 'plaintext';
   const showRowSlider = activeTab === 'json' || activeTab === 'sql';
+  const activeContent = getActiveContent();
 
   return (
     <div className="flex flex-col w-full border border-zinc-800/60 rounded-2xl overflow-hidden shadow-2xl shadow-black/50 bg-zinc-950 text-zinc-100"
       style={{ fontFamily: 'var(--font-inter)' }}>
 
       {/* Header */}
-      <header className="flex items-center justify-between px-5 py-3.5 border-b border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl">
+      <header className="flex items-center justify-between px-5 py-3.5 border-b border-zinc-800/80 bg-zinc-900/60 backdrop-blur-xl flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 flex-shrink-0">
             <Database className="w-4 h-4 text-white" />
@@ -175,18 +224,24 @@ export default function Workbench({ defaultSql = DEFAULT_SQL, defaultTab = 'csha
         </div>
       </header>
 
-      {/* Main Workspace */}
-      <main className="flex flex-col md:flex-row flex-1 overflow-hidden" style={{ height: 'calc(100vh - 9rem)', minHeight: '520px', maxHeight: '760px' }}>
+      {/* Main Workspace — stacks vertically on mobile, side-by-side on desktop */}
+      <main
+        className="flex flex-col md:flex-row flex-1 overflow-hidden md:min-h-[520px] md:max-h-[760px]"
+        style={isDesktop ? { height: 'calc(100vh - 9rem)' } : undefined}
+      >
 
-        {/* Left: Input */}
-        <div className="w-full md:w-1/2 flex flex-col border-b md:border-b-0 md:border-r border-zinc-800/60">
-          <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-900/40 border-b border-zinc-800/60">
+        {/* Left: SQL Input */}
+        <div
+          className="w-full md:w-1/2 flex flex-col border-b md:border-b-0 md:border-r border-zinc-800/60"
+          style={isDesktop ? undefined : { minHeight: '240px', maxHeight: '40vh' }}
+        >
+          <div className="flex items-center justify-between px-4 py-2.5 bg-zinc-900/40 border-b border-zinc-800/60 flex-shrink-0">
             <div className="flex items-center gap-2 text-zinc-400">
               <Code2 className="w-3.5 h-3.5" />
               <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wide">SQL Input</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-zinc-500 font-medium bg-zinc-800/60 px-2 py-0.5 rounded">
+              <span className="text-[10px] text-zinc-500 font-medium bg-zinc-800/60 px-2 py-0.5 rounded hidden sm:inline">
                 PostgreSQL / MySQL / SQLite
               </span>
               <button
@@ -200,42 +255,44 @@ export default function Workbench({ defaultSql = DEFAULT_SQL, defaultTab = 'csha
             </div>
           </div>
 
-          <div className="flex-1 relative">
-            <Editor
-              height="100%"
-              defaultLanguage="sql"
-              theme="vs-dark"
-              value={sqlInput}
-              onChange={(val) => setSqlInput(val || '')}
-              options={{
-                minimap: { enabled: false },
-                fontSize: 13,
-                fontFamily: "'JetBrains Mono', 'Menlo', monospace",
-                fontLigatures: true,
-                padding: { top: 16, bottom: 16 },
-                scrollBeyondLastLine: false,
-                lineHeight: 1.7,
-                renderLineHighlight: 'gutter',
-                cursorBlinking: 'smooth',
-                cursorSmoothCaretAnimation: 'on',
-                formatOnPaste: true,
-                wordWrap: 'on',
-                smoothScrolling: true,
-              }}
-              loading={
-                <div className="flex items-center justify-center h-full text-zinc-500 text-sm gap-2">
-                  <div className="w-4 h-4 border-2 border-zinc-600 border-t-indigo-500 rounded-full animate-spin" />
-                  Loading editor...
-                </div>
-              }
-            />
+          <div className="flex-1 relative overflow-hidden">
+            {isDesktop ? (
+              <Editor
+                height="100%"
+                defaultLanguage="sql"
+                theme="vs-dark"
+                value={sqlInput}
+                onChange={(val) => setSqlInput(val || '')}
+                options={EDITOR_OPTIONS_INPUT}
+                loading={
+                  <div className="flex items-center justify-center h-full text-zinc-500 text-sm gap-2">
+                    <div className="w-4 h-4 border-2 border-zinc-600 border-t-indigo-500 rounded-full animate-spin" />
+                    Loading editor...
+                  </div>
+                }
+              />
+            ) : (
+              <textarea
+                className={textareaClass}
+                value={sqlInput}
+                onChange={(e) => setSqlInput(e.target.value)}
+                placeholder="Paste your SQL CREATE TABLE statements here…"
+                spellCheck={false}
+                autoCapitalize="none"
+                autoCorrect="off"
+                style={{ height: '100%' }}
+              />
+            )}
           </div>
         </div>
 
         {/* Right: Output */}
-        <div className="w-full md:w-1/2 flex flex-col bg-[#1e1e1e]">
+        <div
+          className="w-full md:w-1/2 flex flex-col bg-[#1e1e1e]"
+          style={isDesktop ? undefined : { minHeight: '320px' }}
+        >
           {/* Tab bar */}
-          <div className="flex items-center justify-between px-3 py-2 bg-zinc-900/60 border-b border-zinc-800/60 gap-2">
+          <div className="flex flex-wrap items-center justify-between px-3 py-2 bg-zinc-900/60 border-b border-zinc-800/60 gap-2 flex-shrink-0">
             <div className="flex space-x-0.5 p-0.5 bg-zinc-950/60 rounded-lg border border-zinc-800/50 overflow-x-auto">
               {TAB_CONFIG.map(tab => (
                 <button
@@ -311,27 +368,20 @@ export default function Workbench({ defaultSql = DEFAULT_SQL, defaultTab = 'csha
                   <p className="text-sm text-zinc-500 leading-relaxed">{errorMsg}</p>
                 </div>
               </div>
-            ) : (
+            ) : isDesktop ? (
               <Editor
                 height="100%"
                 language={activeLanguage}
                 theme="vs-dark"
-                value={getActiveContent()}
-                options={{
-                  readOnly: true,
-                  minimap: { enabled: false },
-                  fontSize: 13,
-                  fontFamily: "'JetBrains Mono', 'Menlo', monospace",
-                  fontLigatures: true,
-                  padding: { top: 16, bottom: 16 },
-                  scrollBeyondLastLine: false,
-                  lineHeight: 1.7,
-                  renderLineHighlight: 'none',
-                  matchBrackets: 'never',
-                  hideCursorInOverviewRuler: true,
-                  wordWrap: 'on',
-                  smoothScrolling: true,
-                }}
+                value={activeContent}
+                options={EDITOR_OPTIONS_OUTPUT}
+              />
+            ) : (
+              <textarea
+                readOnly
+                className={textareaClass + ' text-zinc-300'}
+                value={activeContent}
+                style={{ height: '100%' }}
               />
             )}
           </div>
