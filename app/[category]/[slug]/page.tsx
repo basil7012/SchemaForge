@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { seoRoutes } from '@/lib/seo-routes';
 import Workbench from '@/components/Workbench';
-import { ArrowLeft, Database, ShieldCheck, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Database, ShieldCheck, ChevronDown, ArrowRight } from 'lucide-react';
 
 export async function generateStaticParams() {
   return seoRoutes.map((route) => ({
@@ -38,6 +38,11 @@ export async function generateMetadata({
       url: canonicalUrl,
       type: 'website',
       siteName: 'SchemaForge',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: route.title,
+      description: route.description,
     },
   };
 }
@@ -111,6 +116,7 @@ CREATE TABLE orders (
     },
   ];
 
+  // JSON-LD: FAQPage
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -121,6 +127,59 @@ CREATE TABLE orders (
     })),
   };
 
+  // JSON-LD: BreadcrumbList
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'SchemaForge',
+        item: SITE_URL,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: route.category === 'convert' ? 'SQL Converters' : 'Code Generators',
+        item: `${SITE_URL}/${route.category}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: route.title,
+        item: `${SITE_URL}/${route.category}/${route.slug}`,
+      },
+    ],
+  };
+
+  // JSON-LD: SoftwareApplication
+  const softwareSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: route.title,
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Web',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    description: route.description,
+    url: `${SITE_URL}/${route.category}/${route.slug}`,
+  };
+
+  // Build a 60-80 word intro paragraph from route context
+  const toolType = route.category === 'generate' ? 'generator' : 'converter';
+  const introText = route.category === 'generate'
+    ? `This free online ${route.sourceName} to ${route.targetName} ${toolType} turns your \`CREATE TABLE\` DDL statements into ready-to-use ${route.targetName} instantly — with no server upload, no account, and no rate limits. Simply paste your ${route.sourceName} schema on the left and the generated ${route.targetName} code appears on the right in real time. All processing runs entirely in your browser using client-side JavaScript, keeping your database schema 100% private.`
+    : `This free online ${route.sourceName} to ${route.targetName} SQL ${toolType} translates your \`CREATE TABLE\` DDL scripts between dialects instantly — with no server upload, no account, and no rate limits. Paste your ${route.sourceName} schema on the left and the converted ${route.targetName} DDL appears on the right in real time. All conversion logic runs entirely in your browser, keeping your database schema 100% private and secure.`;
+
+  // Related routes for internal linking (same category, different slug, limit 6)
+  const relatedRoutes = seoRoutes
+    .filter((r) => r.category === route.category && r.slug !== route.slug)
+    .slice(0, 6);
+
   return (
     <div
       className="min-h-screen bg-zinc-950 flex flex-col"
@@ -129,6 +188,14 @@ CREATE TABLE orders (
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
       />
 
       {/* Nav bar */}
@@ -152,8 +219,26 @@ CREATE TABLE orders (
         </div>
       </nav>
 
+      {/* Breadcrumb — visible to users and crawlers */}
+      <nav aria-label="Breadcrumb" className="px-5 pt-4 pb-1 max-w-[1600px] w-full mx-auto">
+        <ol className="flex items-center gap-1.5 text-xs text-zinc-600">
+          <li><Link href="/" className="hover:text-zinc-400 transition-colors">SchemaForge</Link></li>
+          <li aria-hidden="true">/</li>
+          <li>
+            <Link
+              href={`/${route.category}`}
+              className="hover:text-zinc-400 transition-colors capitalize"
+            >
+              {route.category === 'convert' ? 'SQL Converters' : 'Code Generators'}
+            </Link>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li className="text-zinc-400 truncate max-w-[200px]">{route.title.split(' — ')[0].split(' | ')[0]}</li>
+        </ol>
+      </nav>
+
       {/* Hero */}
-      <div className="text-center px-4 pt-10 pb-8">
+      <div className="text-center px-4 pt-6 pb-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-800/60 border border-zinc-700/40 text-zinc-400 text-xs font-medium mb-5">
           {route.category === 'generate' ? 'Code Generator' : 'SQL Converter'}
           <span className="text-zinc-600">•</span>
@@ -165,8 +250,9 @@ CREATE TABLE orders (
           to{' '}
           <span className="text-cyan-400">{route.targetName}</span>
         </h1>
-        <p className="text-base text-zinc-400 max-w-xl mx-auto leading-relaxed">
-          {route.description}
+        {/* 50+ word intro text — P1 SEO fix: crawlers see prose before the tool UI */}
+        <p className="text-base text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+          {introText}
         </p>
       </div>
 
@@ -176,7 +262,7 @@ CREATE TABLE orders (
       </div>
 
       {/* FAQ */}
-      <div className="px-4 pb-20 max-w-3xl w-full mx-auto">
+      <div className="px-4 pb-10 max-w-3xl w-full mx-auto">
         <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl overflow-hidden">
           <div className="px-6 py-5 border-b border-zinc-800/60">
             <h2 className="text-xl font-bold text-zinc-100">Frequently Asked Questions</h2>
@@ -200,6 +286,28 @@ CREATE TABLE orders (
           </div>
         </div>
       </div>
+
+      {/* Related Tools — internal linking for SEO crawl depth */}
+      {relatedRoutes.length > 0 && (
+        <div className="px-4 pb-16 max-w-3xl w-full mx-auto">
+          <h2 className="text-base font-semibold text-zinc-300 mb-3">
+            Related {route.category === 'convert' ? 'SQL Converters' : 'Code Generators'}
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {relatedRoutes.map((r) => (
+              <Link
+                key={r.slug}
+                href={`/${r.category}/${r.slug}`}
+                className="flex items-center justify-between gap-2 px-3 py-2.5 bg-zinc-900/40 border border-zinc-800/60 rounded-xl text-xs font-medium text-zinc-400 hover:text-zinc-100 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all duration-200 group"
+              >
+                <span>{r.sourceName} → {r.targetName}</span>
+                <ArrowRight className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

@@ -1,3 +1,4 @@
+import React from "react";
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
@@ -19,9 +20,9 @@ const SITE_URL = "https://www.schemaforge.online";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "SchemaForge — SQL to C# & TypeScript Converter",
+  title: "SQL to C# & TypeScript Converter — SchemaForge",
   description:
-    "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, Mock JSON, and SQL Inserts. 100% free, private, and runs entirely in your browser.",
+    "Free online converter: turn SQL CREATE TABLE scripts into C# POCO classes, TypeScript interfaces & mock JSON. 100% private, runs in your browser.",
   keywords: [
     "SQL converter",
     "schema to C#",
@@ -39,25 +40,25 @@ export const metadata: Metadata = {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "SchemaForge — SQL to C# & TypeScript Converter",
+    title: "SQL to C# & TypeScript Converter — SchemaForge",
     description:
-      "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, and realistic mock data. 100% client-side & private.",
+      "Free online converter: turn SQL CREATE TABLE scripts into C# POCO classes, TypeScript interfaces & mock JSON. 100% private, runs in your browser.",
     type: "website",
     url: SITE_URL,
     siteName: "SchemaForge",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SchemaForge — SQL to C# & TypeScript Converter",
+    title: "SQL to C# & TypeScript Converter — SchemaForge",
     description:
-      "Convert SQL CREATE TABLE scripts to C# POCO, TypeScript interfaces, and realistic mock data. 100% client-side & private.",
+      "Free online converter: turn SQL CREATE TABLE scripts into C# POCO classes, TypeScript interfaces & mock JSON. 100% private, runs in your browser.",
   },
   verification: {
     google: "tRB_DAf4Sx9lHG5MeD9LT5cLucGjvoqZ1d0zABuwjL0",
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"

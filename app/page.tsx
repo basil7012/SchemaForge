@@ -10,23 +10,10 @@ const FEATURES = [
   { icon: Code2, title: '4 Output Formats', desc: 'C# POCO, TypeScript interfaces, Mock JSON, and SQL INSERT statements.' },
 ];
 
-// Curated featured links for the homepage — highest-intent routes
-const FEATURED_ROUTES = [
-  { slug: 'postgres-to-csharp-poco', category: 'generate', label: 'PostgreSQL → C# POCO' },
-  { slug: 'mysql-to-csharp-poco', category: 'generate', label: 'MySQL → C# POCO' },
-  { slug: 'postgres-to-typescript', category: 'generate', label: 'PostgreSQL → TypeScript' },
-  { slug: 'mysql-to-typescript', category: 'generate', label: 'MySQL → TypeScript' },
-  { slug: 'sqlite-to-csharp-poco', category: 'generate', label: 'SQLite → C# POCO' },
-  { slug: 'sqlite-to-typescript', category: 'generate', label: 'SQLite → TypeScript' },
-  { slug: 'postgres-to-mock-json', category: 'generate', label: 'PostgreSQL → Mock JSON' },
-  { slug: 'mysql-to-mock-json', category: 'generate', label: 'MySQL → Mock JSON' },
-  { slug: 'sql-server-to-csharp-poco', category: 'generate', label: 'SQL Server → C# POCO' },
-  { slug: 'sql-server-to-typescript', category: 'generate', label: 'SQL Server → TypeScript' },
-  { slug: 'postgres-to-sql-server', category: 'convert', label: 'PostgreSQL → SQL Server' },
-  { slug: 'mysql-to-postgres', category: 'convert', label: 'MySQL → PostgreSQL' },
-];
-
 export default function HomePage() {
+  const convertRoutes = seoRoutes.filter((r) => r.category === 'convert');
+  const generateRoutes = seoRoutes.filter((r) => r.category === 'generate');
+
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col" style={{ fontFamily: 'var(--font-inter)' }}>
       {/* Hero section */}
@@ -90,27 +77,45 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Popular Conversions — internal linking for SEO */}
-      <div className="px-4 pb-16 max-w-[1600px] w-full mx-auto">
+      {/* Full Tool Directory — all routes linked for crawlability (P1 SEO fix) */}
+      <div className="px-4 pb-10 max-w-[1600px] w-full mx-auto">
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-zinc-100 mb-1">Popular Conversions</h2>
-          <p className="text-sm text-zinc-500">Start with a pre-configured converter for your exact SQL dialect and target format.</p>
+          <h2 className="text-xl font-bold text-zinc-100 mb-1">SQL Converters</h2>
+          <p className="text-sm text-zinc-500">Convert DDL scripts between SQL dialects — all free, private, and in-browser.</p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          {FEATURED_ROUTES.map((route) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 mb-12">
+          {convertRoutes.map((route) => (
             <Link
               key={route.slug}
               href={`/${route.category}/${route.slug}`}
               className="flex items-center justify-between gap-2 px-3 py-2.5 bg-zinc-900/40 border border-zinc-800/60 rounded-xl text-xs font-medium text-zinc-400 hover:text-zinc-100 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all duration-200 group"
             >
-              <span>{route.label}</span>
+              <span>{route.sourceName} → {route.targetName}</span>
               <ArrowRight className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
             </Link>
           ))}
         </div>
-        <div className="mt-4 text-center">
+
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-zinc-100 mb-1">Code Generators</h2>
+          <p className="text-sm text-zinc-500">Generate typed code and mock data from any SQL schema.</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 mb-8">
+          {generateRoutes.map((route) => (
+            <Link
+              key={route.slug}
+              href={`/${route.category}/${route.slug}`}
+              className="flex items-center justify-between gap-2 px-3 py-2.5 bg-zinc-900/40 border border-zinc-800/60 rounded-xl text-xs font-medium text-zinc-400 hover:text-zinc-100 hover:border-cyan-500/40 hover:bg-cyan-500/5 transition-all duration-200 group"
+            >
+              <span>{route.sourceName} → {route.targetName}</span>
+              <ArrowRight className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </Link>
+          ))}
+        </div>
+
+        <div className="text-center pb-8">
           <p className="text-xs text-zinc-600">
-            {seoRoutes.length}+ converters available — covering all major SQL dialects and output formats.
+            {seoRoutes.length} tools covering all major SQL dialects and output formats — 100% free, private, and in-browser.
           </p>
         </div>
       </div>
