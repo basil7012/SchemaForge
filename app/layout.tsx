@@ -20,11 +20,12 @@ const SITE_URL = "https://www.schemaforge.online";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "SQL to C# & TypeScript Converter — SchemaForge",
+  title: 'SQL to C# & TypeScript Converter — SchemaForge',
   description:
-    "Free online converter: turn SQL CREATE TABLE scripts into C# POCO classes, TypeScript interfaces & mock JSON. 100% private, runs in your browser.",
+    'Convert SQL CREATE TABLE scripts to C#, TypeScript, Python, Java & more. 63 free online tools — PostgreSQL, MySQL, SQLite, SQL Server, Oracle, MariaDB. 100% private, runs in your browser.',
   keywords: [
     "SQL converter",
+    "SQL schema generator",
     "schema to C#",
     "SQL to TypeScript",
     "postgres to csharp",
@@ -33,25 +34,36 @@ export const metadata: Metadata = {
     "DDL converter",
     "free SQL tool",
     "CREATE TABLE converter",
-    "SQL schema generator",
+    "postgres to python dataclass",
+    "mysql to python",
+    "SQL to java entity",
+    "postgres to go struct",
+    "postgres to mysql converter",
+    "mysql to postgresql converter",
+    "sqlite to postgres",
+    "oracle to postgresql",
+    "mariadb converter",
+    "sql server converter",
+    "SQL insert generator",
+    "mock JSON generator",
   ],
   authors: [{ name: "SchemaForge" }],
   alternates: {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "SQL to C# & TypeScript Converter — SchemaForge",
+    title: 'SQL to C# & TypeScript Converter — SchemaForge',
     description:
-      "Free online converter: turn SQL CREATE TABLE scripts into C# POCO classes, TypeScript interfaces & mock JSON. 100% private, runs in your browser.",
+      'Convert SQL CREATE TABLE scripts to C#, TypeScript, Python, Java & more. 63 free tools — 100% private, runs in your browser.',
     type: "website",
     url: SITE_URL,
     siteName: "SchemaForge",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SQL to C# & TypeScript Converter — SchemaForge",
+    title: 'SQL to C# & TypeScript Converter — SchemaForge',
     description:
-      "Free online converter: turn SQL CREATE TABLE scripts into C# POCO classes, TypeScript interfaces & mock JSON. 100% private, runs in your browser.",
+      'Convert SQL CREATE TABLE scripts to C#, TypeScript, Python, Java & more. 63 free tools — 100% private, runs in your browser.',
   },
   verification: {
     google: "tRB_DAf4Sx9lHG5MeD9LT5cLucGjvoqZ1d0zABuwjL0",

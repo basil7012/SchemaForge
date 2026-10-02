@@ -35,6 +35,7 @@ const convertTargets = [
 
 // Audit-specified exact copy for high-intent pages (title ≤60, desc ≤155)
 const overrides: Record<string, { title: string; description: string }> = {
+  // ── High-intent manually curated ──────────────────────────────────────────
   'convert/mysql-to-sql-server': {
     title: 'MySQL to SQL Server Converter — Free Online | SchemaForge',
     description: 'Convert MySQL CREATE TABLE scripts to SQL Server T-SQL instantly. Free, private, no upload — runs entirely in your browser.',
@@ -70,6 +71,63 @@ const overrides: Record<string, { title: string; description: string }> = {
   'generate/oracle-to-java-entity': {
     title: 'Oracle to Java Entity (JPA) Generator | SchemaForge',
     description: 'Convert Oracle CREATE TABLE scripts to Java entity classes with JPA annotations. Free, private, runs in your browser.',
+  },
+  // ── Auto-generated titles that exceed 60 chars — shortened overrides ──────
+  'generate/postgres-to-sql-inserts': {
+    title: 'PostgreSQL SQL Insert Generator — Free | SchemaForge',
+    description: 'Instantly generate SQL INSERT statements from PostgreSQL CREATE TABLE scripts. Free, private, runs entirely in your browser.',
+  },
+  'generate/postgres-to-python-dataclass': {
+    title: 'PostgreSQL to Python Dataclass Generator | SchemaForge',
+    description: 'Instantly generate Python dataclasses from PostgreSQL CREATE TABLE scripts. Free, private, runs entirely in your browser.',
+  },
+  'convert/postgres-to-sql-server': {
+    title: 'PostgreSQL to SQL Server Converter — Free | SchemaForge',
+    description: 'Convert PostgreSQL CREATE TABLE scripts to SQL Server T-SQL instantly. Free, private, browser-based — no signup, no upload.',
+  },
+  'generate/mysql-to-sql-inserts': {
+    title: 'MySQL SQL Insert Statement Generator | SchemaForge',
+    description: 'Instantly generate SQL INSERT statements from MySQL CREATE TABLE scripts. Free, private, runs entirely in your browser.',
+  },
+  'generate/sqlite-to-typescript': {
+    title: 'SQLite to TypeScript Interface Generator | SchemaForge',
+    description: 'Instantly generate TypeScript interfaces from SQLite CREATE TABLE scripts. Free, private, runs entirely in your browser.',
+  },
+  'generate/sqlite-to-sql-inserts': {
+    title: 'SQLite SQL Insert Statement Generator | SchemaForge',
+    description: 'Instantly generate SQL INSERT statements from SQLite CREATE TABLE scripts. Free, private, runs entirely in your browser.',
+  },
+  'generate/sql-server-to-typescript': {
+    title: 'SQL Server to TypeScript Generator — Free | SchemaForge',
+    description: 'Instantly generate TypeScript interfaces from SQL Server CREATE TABLE scripts. Free, private, runs entirely in your browser.',
+  },
+  'generate/sql-server-to-sql-inserts': {
+    title: 'SQL Server SQL Insert Generator — Free | SchemaForge',
+    description: 'Instantly generate SQL INSERT statements from SQL Server CREATE TABLE scripts. Free, private, runs entirely in your browser.',
+  },
+  'generate/sql-server-to-python-dataclass': {
+    title: 'SQL Server to Python Dataclass Generator | SchemaForge',
+    description: 'Instantly generate Python dataclasses from SQL Server CREATE TABLE scripts. Free, private, runs entirely in your browser.',
+  },
+  'convert/sql-server-to-postgres': {
+    title: 'SQL Server to PostgreSQL Converter — Free | SchemaForge',
+    description: 'Convert SQL Server CREATE TABLE scripts to PostgreSQL DDL instantly. Free, private, browser-based — no signup, no upload.',
+  },
+  'generate/oracle-to-typescript': {
+    title: 'Oracle to TypeScript Interface Generator | SchemaForge',
+    description: 'Instantly generate TypeScript interfaces from Oracle CREATE TABLE scripts. Free, private, runs entirely in your browser.',
+  },
+  'generate/oracle-to-sql-inserts': {
+    title: 'Oracle SQL Insert Statement Generator | SchemaForge',
+    description: 'Instantly generate SQL INSERT statements from Oracle CREATE TABLE scripts. Free, private, runs entirely in your browser.',
+  },
+  'generate/mariadb-to-typescript': {
+    title: 'MariaDB to TypeScript Interface Generator | SchemaForge',
+    description: 'Instantly generate TypeScript interfaces from MariaDB CREATE TABLE scripts. Free, private, runs entirely in your browser.',
+  },
+  'generate/mariadb-to-sql-inserts': {
+    title: 'MariaDB SQL Insert Statement Generator | SchemaForge',
+    description: 'Instantly generate SQL INSERT statements from MariaDB CREATE TABLE scripts. Free, private, runs entirely in your browser.',
   },
 };
 

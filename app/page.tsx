@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Workbench from '@/components/Workbench';
-import { ShieldCheck, Zap, Lock, Code2, ArrowRight } from 'lucide-react';
+import { ShieldCheck, Zap, Lock, Code2, ArrowRight, Database } from 'lucide-react';
 import { seoRoutes } from '@/lib/seo-routes';
 
 const FEATURES = [
@@ -10,12 +10,69 @@ const FEATURES = [
   { icon: Code2, title: '4 Output Formats', desc: 'C# POCO, TypeScript interfaces, Mock JSON, and SQL INSERT statements.' },
 ];
 
+const SITE_URL = 'https://www.schemaforge.online';
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'SchemaForge',
+  url: SITE_URL,
+  description:
+    'Free online SQL schema converter and code generator. Convert CREATE TABLE scripts to C#, TypeScript, Python, Java and more — 100% private, runs in your browser.',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `${SITE_URL}/convert/{search_term_string}`,
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'SchemaForge',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Web',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  description:
+    'Convert SQL CREATE TABLE scripts to C#, TypeScript, Python dataclasses, Java entities, Go structs, mock JSON, and SQL inserts. Supports PostgreSQL, MySQL, SQLite, SQL Server, Oracle, and MariaDB.',
+  url: SITE_URL,
+};
+
 export default function HomePage() {
   const convertRoutes = seoRoutes.filter((r) => r.category === 'convert');
   const generateRoutes = seoRoutes.filter((r) => r.category === 'generate');
 
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col" style={{ fontFamily: 'var(--font-inter)' }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
+      />
+      {/* Site Nav */}
+      <nav className="sticky top-0 z-50 flex items-center justify-between px-5 py-3 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-xl">
+        <Link href="/" className="flex items-center gap-2" aria-label="SchemaForge home">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+            <Database className="w-4 h-4 text-white" />
+          </div>
+          <span className="font-bold text-sm bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent tracking-tight">
+            SchemaForge
+          </span>
+        </Link>
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+          <ShieldCheck className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">100% Private — No Server Calls</span>
+          <span className="sm:hidden">Private</span>
+        </div>
+      </nav>
+
       {/* Hero section */}
       <div className="text-center px-4 pt-14 pb-10">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold tracking-wide mb-6">
@@ -23,14 +80,15 @@ export default function HomePage() {
           100% Client-Side &amp; Private — Zero Server Transmission
         </div>
         <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-zinc-100 mb-4 leading-tight">
-          Free SQL Schema to{' '}
+          SQL to{' '}
           <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
             C# &amp; TypeScript
-          </span>
+          </span>{' '}
+          Converter
         </h1>
         <p className="text-lg text-zinc-400 max-w-xl mx-auto leading-relaxed">
-          Paste any SQL <code className="text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded text-sm">CREATE TABLE</code> script.
-          Instantly get C# POCO models, TypeScript interfaces, realistic mock JSON, and SQL INSERT statements.
+          Paste any SQL{' '}<code className="text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded text-sm">CREATE TABLE</code>{' '}
+          script. Instantly get C# POCO models, TypeScript interfaces, realistic mock JSON, and SQL INSERT statements.
         </p>
       </div>
 
@@ -119,6 +177,26 @@ export default function HomePage() {
           </p>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-800/60 bg-zinc-900/30 mt-auto">
+        <div className="max-w-[1600px] mx-auto px-5 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-md bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center">
+              <Database className="w-3 h-3 text-white" />
+            </div>
+            <span className="text-xs font-semibold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+              SchemaForge
+            </span>
+            <span className="text-xs text-zinc-600">© {new Date().getFullYear()} — Free, open, private.</span>
+          </div>
+          <nav aria-label="Footer navigation" className="flex items-center gap-4 text-xs text-zinc-500">
+            <Link href="/convert/postgres-to-mysql" className="hover:text-zinc-300 transition-colors">SQL Converters</Link>
+            <Link href="/generate/postgres-to-csharp-poco" className="hover:text-zinc-300 transition-colors">Code Generators</Link>
+            <Link href="/sitemap.xml" className="hover:text-zinc-300 transition-colors">Sitemap</Link>
+          </nav>
+        </div>
+      </footer>
     </div>
   );
 }
