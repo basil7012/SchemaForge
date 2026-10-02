@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { seoRoutes } from '@/lib/seo-routes';
+import { getTypeMappings } from '@/lib/type-mappings';
 import Workbench from '@/components/Workbench';
 import { ArrowLeft, Database, ShieldCheck, ChevronDown, ArrowRight } from 'lucide-react';
 
@@ -142,12 +143,12 @@ CREATE TABLE orders (
         '@type': 'ListItem',
         position: 2,
         name: route.category === 'convert' ? 'SQL Converters' : 'Code Generators',
-        item: `${SITE_URL}/${route.category}`,
+        item: SITE_URL,
       },
       {
         '@type': 'ListItem',
         position: 3,
-        name: route.title,
+        name: `${route.sourceName} to ${route.targetName} ${route.category === 'generate' ? 'Generator' : 'Converter'}`,
         item: `${SITE_URL}/${route.category}/${route.slug}`,
       },
     ],
@@ -157,7 +158,7 @@ CREATE TABLE orders (
   const softwareSchema = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: route.title,
+    name: `${route.sourceName} to ${route.targetName} ${route.category === 'generate' ? 'Generator' : 'Converter'}`,
     applicationCategory: 'DeveloperApplication',
     operatingSystem: 'Web',
     offers: {
@@ -168,12 +169,6 @@ CREATE TABLE orders (
     description: route.description,
     url: `${SITE_URL}/${route.category}/${route.slug}`,
   };
-
-  // Build a 60-80 word intro paragraph from route context
-  const toolType = route.category === 'generate' ? 'generator' : 'converter';
-  const introText = route.category === 'generate'
-    ? `This free online ${route.sourceName} to ${route.targetName} ${toolType} turns your \`CREATE TABLE\` DDL statements into ready-to-use ${route.targetName} instantly — with no server upload, no account, and no rate limits. Simply paste your ${route.sourceName} schema on the left and the generated ${route.targetName} code appears on the right in real time. All processing runs entirely in your browser using client-side JavaScript, keeping your database schema 100% private.`
-    : `This free online ${route.sourceName} to ${route.targetName} SQL ${toolType} translates your \`CREATE TABLE\` DDL scripts between dialects instantly — with no server upload, no account, and no rate limits. Paste your ${route.sourceName} schema on the left and the converted ${route.targetName} DDL appears on the right in real time. All conversion logic runs entirely in your browser, keeping your database schema 100% private and secure.`;
 
   // Related routes for internal linking (same category, different slug, limit 6)
   const relatedRoutes = seoRoutes
@@ -200,7 +195,7 @@ CREATE TABLE orders (
 
       {/* Nav bar */}
       <nav className="sticky top-0 z-50 flex items-center justify-between px-5 py-3 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-xl">
-        <Link href="/" className="flex items-center gap-2 text-zinc-400 hover:text-zinc-100 transition-colors group">
+        <Link href="/" aria-label="Back to SchemaForge home" className="flex items-center gap-2 text-zinc-400 hover:text-zinc-100 transition-colors group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center">
@@ -226,7 +221,7 @@ CREATE TABLE orders (
           <li aria-hidden="true">/</li>
           <li>
             <Link
-              href={`/${route.category}`}
+              href={`/`}
               className="hover:text-zinc-400 transition-colors capitalize"
             >
               {route.category === 'convert' ? 'SQL Converters' : 'Code Generators'}
@@ -252,7 +247,10 @@ CREATE TABLE orders (
         </h1>
         {/* 50+ word intro text — P1 SEO fix: crawlers see prose before the tool UI */}
         <p className="text-base text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-          {introText}
+          {route.category === 'generate'
+            ? <>This free online {route.sourceName} to {route.targetName} generator turns your <code className="text-indigo-400 bg-indigo-950/60 px-1 rounded text-sm">CREATE TABLE</code> DDL statements into ready-to-use {route.targetName} instantly — with no server upload, no account, and no rate limits. Simply paste your {route.sourceName} schema on the left and the generated {route.targetName} code appears on the right in real time. All processing runs entirely in your browser using client-side JavaScript, keeping your database schema 100% private.</>
+            : <>This free online {route.sourceName} to {route.targetName} SQL converter translates your <code className="text-indigo-400 bg-indigo-950/60 px-1 rounded text-sm">CREATE TABLE</code> DDL scripts between dialects instantly — with no server upload, no account, and no rate limits. Paste your {route.sourceName} schema on the left and the converted {route.targetName} DDL appears on the right in real time. All conversion logic runs entirely in your browser, keeping your database schema 100% private and secure.</>
+          }
         </p>
       </div>
 
@@ -260,6 +258,64 @@ CREATE TABLE orders (
       <div className="px-4 pb-6 max-w-[1600px] w-full mx-auto">
         <Workbench defaultSql={defaultSql} defaultTab={defaultTab} />
       </div>
+
+      {/* Type Mapping Table — unique per page, critical for SEO content differentiation */}
+      {(() => {
+        const mappings = getTypeMappings(route.category, route.slug);
+        if (!mappings || mappings.length === 0) return null;
+        const isGenerate = route.category === 'generate';
+        const sourceLabel = route.sourceName + ' Type';
+        const targetLabel = isGenerate ? route.targetName + ' Type' : route.targetName + ' Equivalent';
+        return (
+          <div className="px-4 pb-10 max-w-4xl w-full mx-auto">
+            <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl overflow-hidden">
+              <div className="px-6 py-5 border-b border-zinc-800/60">
+                <h2 className="text-xl font-bold text-zinc-100">
+                  {route.sourceName} → {route.targetName} Type Reference
+                </h2>
+                <p className="text-sm text-zinc-500 mt-1">
+                  {isGenerate
+                    ? `Complete type mapping from ${route.sourceName} SQL column types to ${route.targetName} — including nullability, constraints, and gotchas.`
+                    : `How ${route.sourceName} column types map to their ${route.targetName} equivalents, with migration notes for each type.`
+                  }
+                </p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-zinc-800/60 bg-zinc-900/60">
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider w-2/5">
+                        {sourceLabel}
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider w-2/5">
+                        {targetLabel}
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                        Notes
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-800/40">
+                    {mappings.map((row, i) => (
+                      <tr key={i} className="hover:bg-zinc-800/20 transition-colors">
+                        <td className="px-6 py-3 font-mono text-xs text-indigo-300 align-top">
+                          {row.sourceType}
+                        </td>
+                        <td className="px-6 py-3 font-mono text-xs text-cyan-300 align-top">
+                          {row.targetType}
+                        </td>
+                        <td className="px-6 py-3 text-xs text-zinc-500 align-top">
+                          {row.notes ?? '—'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* FAQ */}
       <div className="px-4 pb-10 max-w-3xl w-full mx-auto">
@@ -307,7 +363,27 @@ CREATE TABLE orders (
           </div>
         </div>
       )}
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-800/60 bg-zinc-900/30 mt-auto">
+        <div className="max-w-[1600px] mx-auto px-5 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-md bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center">
+              <Database className="w-3 h-3 text-white" />
+            </div>
+            <span className="text-xs font-semibold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+              SchemaForge
+            </span>
+            <span className="text-xs text-zinc-600">© {new Date().getFullYear()} — Free, open, private.</span>
+          </div>
+          <nav aria-label="Footer navigation" className="flex items-center gap-4 text-xs text-zinc-500">
+            <Link href="/" className="hover:text-zinc-300 transition-colors">Home</Link>
+            <Link href="/convert/postgres-to-mysql" className="hover:text-zinc-300 transition-colors">SQL Converters</Link>
+            <Link href="/generate/postgres-to-csharp-poco" className="hover:text-zinc-300 transition-colors">Code Generators</Link>
+            <Link href="/sitemap.xml" className="hover:text-zinc-300 transition-colors">Sitemap</Link>
+          </nav>
+        </div>
+      </footer>
     </div>
   );
 }
-

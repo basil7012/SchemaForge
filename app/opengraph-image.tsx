@@ -218,7 +218,7 @@ export default function Image() {
             letterSpacing: '0.5px',
           }}
         >
-          schemaforge.dev
+          schemaforge.online
         </div>
       </div>
     ),

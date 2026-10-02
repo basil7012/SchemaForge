@@ -13,7 +13,7 @@ function generateValueForColumn(col: TableSchema['columns'][0]) {
   if (name.includes('first_name') || name === 'firstname') return faker.person.firstName();
   if (name.includes('last_name') || name === 'lastname') return faker.person.lastName();
   if (name.includes('name')) return faker.person.fullName();
-  if (name.includes('phone')) return faker.phone.number();
+  if (name.includes('phone')) return faker.phone.number({ style: 'national' });
   if (name.includes('price') || name.includes('amount') || name.includes('cost')) return parseFloat(faker.commerce.price());
   if (name.includes('company')) return faker.company.name();
   if (name.includes('address') || name.includes('street')) return faker.location.streetAddress();

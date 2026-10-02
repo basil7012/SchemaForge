@@ -182,7 +182,7 @@ export default function Workbench({ defaultSql = DEFAULT_SQL, defaultTab = 'csha
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `schema.${tab.ext}`;
+    a.download = `schemaforge-output.${tab.ext}`;
     a.click();
     URL.revokeObjectURL(url);
     setDownloaded(true);
@@ -226,12 +226,15 @@ export default function Workbench({ defaultSql = DEFAULT_SQL, defaultTab = 'csha
 
       {/* Main Workspace — stacks vertically on mobile, side-by-side on desktop */}
       <main
+        aria-label="SQL converter workbench"
         className="flex flex-col md:flex-row flex-1 overflow-hidden md:min-h-[520px] md:max-h-[760px]"
         style={isDesktop ? { height: 'calc(100vh - 9rem)' } : undefined}
       >
 
         {/* Left: SQL Input */}
         <div
+          role="region"
+          aria-label="SQL input editor"
           className="w-full md:w-1/2 flex flex-col border-b md:border-b-0 md:border-r border-zinc-800/60"
           style={isDesktop ? undefined : { minHeight: '240px', maxHeight: '40vh' }}
         >
@@ -288,6 +291,8 @@ export default function Workbench({ defaultSql = DEFAULT_SQL, defaultTab = 'csha
 
         {/* Right: Output */}
         <div
+          role="region"
+          aria-label="Generated code output"
           className="w-full md:w-1/2 flex flex-col bg-[#1e1e1e]"
           style={isDesktop ? undefined : { minHeight: '320px' }}
         >

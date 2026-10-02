@@ -66,11 +66,14 @@ export default function HomePage() {
             SchemaForge
           </span>
         </Link>
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-          <ShieldCheck className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">100% Private — No Server Calls</span>
-          <span className="sm:hidden">Private</span>
-        </div>
+        <nav className="flex items-center gap-4 text-xs text-zinc-500">
+          <Link href="/blog" className="hover:text-zinc-300 transition-colors">Blog</Link>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">100% Private — No Server Calls</span>
+            <span className="sm:hidden">Private</span>
+          </div>
+        </nav>
       </nav>
 
       {/* Hero section */}
@@ -191,6 +194,7 @@ export default function HomePage() {
             <span className="text-xs text-zinc-600">© {new Date().getFullYear()} — Free, open, private.</span>
           </div>
           <nav aria-label="Footer navigation" className="flex items-center gap-4 text-xs text-zinc-500">
+            <Link href="/blog" className="hover:text-zinc-300 transition-colors">Blog</Link>
             <Link href="/convert/postgres-to-mysql" className="hover:text-zinc-300 transition-colors">SQL Converters</Link>
             <Link href="/generate/postgres-to-csharp-poco" className="hover:text-zinc-300 transition-colors">Code Generators</Link>
             <Link href="/sitemap.xml" className="hover:text-zinc-300 transition-colors">Sitemap</Link>
