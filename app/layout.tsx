@@ -66,7 +66,7 @@ export const metadata: Metadata = {
       'Convert SQL CREATE TABLE scripts to C#, TypeScript, Python, Java & more. 63 free tools — 100% private, runs in your browser.',
   },
   verification: {
-    google: "tRB_DAf4Sx9lHG5MeD9LT5cLucGjvoqZ1d0zABuwjL0",
+    google: "tRB_DAf4Sx9lHG5MeD9LT5cLucGjvoqZldOzABuwjL0",
   },
 };
 
