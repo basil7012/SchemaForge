@@ -170,10 +170,22 @@ CREATE TABLE orders (
     url: `${SITE_URL}/${route.category}/${route.slug}`,
   };
 
-  // Related routes for internal linking (same category, different slug, limit 6)
-  const relatedRoutes = seoRoutes
-    .filter((r) => r.category === route.category && r.slug !== route.slug)
-    .slice(0, 6);
+  // Keep internal links semantically relevant. The previous first-six selection
+  // often pointed to unrelated PostgreSQL tools, regardless of the current route.
+  const relatedRoutes = Array.from(
+    new Map(
+      seoRoutes
+        .filter((r) => r.category === route.category && r.slug !== route.slug)
+        .sort((a, b) => {
+          const relevance = (candidate: typeof a) =>
+            Number(candidate.sourceName === route.sourceName) * 2 +
+            Number(candidate.targetName === route.targetName);
+
+          return relevance(b) - relevance(a) || a.title.localeCompare(b.title);
+        })
+        .map((r) => [r.slug, r]),
+    ).values(),
+  ).slice(0, 6);
 
   return (
     <div
