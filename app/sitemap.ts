@@ -7,7 +7,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const dynamicRoutes = seoRoutes.map((route) => ({
     url: `${baseUrl}/${route.category}/${route.slug}`,
-    lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));
@@ -21,14 +20,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const homeRoute = {
     url: baseUrl,
-    lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 1.0,
   };
 
   const blogIndex = {
     url: `${baseUrl}/blog`,
-    lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.9,
   };
